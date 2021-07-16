@@ -4,9 +4,20 @@ variable "aws_profile" {
   default     = env("AWS_PROFILE")
 }
 
+variable "buildkite_step_key" {
+  description = "The key of the step in the Buildkite pipeline this AMI was built in. If present, will be used to tag the instance used to build the AMI."
+  type        = string
+  default     = env("BUILDKITE_STEP_KEY")
+}
+
+locals {
+  # We append a timestamp to the AMI name to create unique names.
+  formatted_timestamp = formatdate("YYYYMMDDhhmmss", timestamp())
+}
+
 source "amazon-ebs" "testing" {
   ami_description = "Grapl Buildkite Base Image"
-  ami_name        = "grapl-packer-test"
+  ami_name        = "grapl-packer-test-${var.buildkite_step_key}-${local.formatted_timestamp}"
   instance_type   = "t2.micro"
   region          = "us-east-1"
   source_ami_filter {
