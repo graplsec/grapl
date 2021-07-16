@@ -186,7 +186,10 @@ steps:
       - docker#v3.8.0:
           image: "hashicorp/packer:1.7.2"
           entrypoint: bash
-          propagate-environment: true
+          propagate-aws-auth-tokens: true
+          environment:
+            - "BUILDKITE_ARTIFACT_UPLOAD_DESTINATION"
+            - "BUILDKITE_S3_DEFAULT_REGION"
     agents:
       queue: "packer-staging"
 
