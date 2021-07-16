@@ -180,7 +180,7 @@ steps:
       queue: "packer-staging"
 
   - label: "Test Packer Build with post-command role drop"
-    command: ".buildkite/scripts/build_packer_ci.sh"
+    command: "packer_test.sh"
     key: "post-command"
     plugins:
       - docker#v3.8.0:
@@ -195,7 +195,7 @@ steps:
       - "packer-manifest.json"
 
   - label: "Test Packer Build with pre-artifact role drop"
-    command: ".buildkite/scripts/build_packer_ci.sh"
+    command: "packer_test.sh"
     key: "pre-artifact"
     plugins:
       - docker#v3.8.0:
