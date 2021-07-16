@@ -4,11 +4,13 @@ set -euo pipefail
 
 dropping_steps=(
     with-drop
+    drop-with-env
 )
 
 uploading_steps=(
     no-drop
     with-drop
+    drop-with-env
 )
 
 should_drop() {

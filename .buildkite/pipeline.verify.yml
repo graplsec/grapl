@@ -179,6 +179,17 @@ steps:
     agents:
       queue: "packer-staging"
 
+  - label: "Test Packer Build with in-command role-dropping and full env"
+    command: "packer_test.sh"
+    key: "drop-with-env"
+    plugins:
+      - docker#v3.8.0:
+          image: "hashicorp/packer:1.7.2"
+          entrypoint: bash
+          propagate-environment: true
+    agents:
+      queue: "packer-staging"
+
   - label: "Test Packer Build with post-command role drop"
     command: "packer_test.sh"
     key: "post-command"
