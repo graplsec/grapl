@@ -35,8 +35,8 @@ drop_role() {
     export AWS_SESSION_TOKEN
 }
 
-echo "--- :aws: Identity Before Packer"
-aws sts get-current-identity
+#echo "--- :aws: Identity Before Packer"
+#aws sts get-current-identity
 
 echo "--- :packer: Packer build"
 packer build test.pkr.hcl
@@ -47,8 +47,8 @@ if should_drop; then
 fi
 
 if should_upload; then
-    echo "--- :aws: Identity before Upload (in command)"
-    aws sts get-current-identity
+#    echo "--- :aws: Identity before Upload (in command)"
+#    aws sts get-current-identity
 
     echo "--- :buildkite: Uploading manifest"
     buildkite-agent artifact upload packer-manifest.json
