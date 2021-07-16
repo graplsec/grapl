@@ -8,6 +8,7 @@
 
 set -euo pipefail
 
+source .buildkite/scripts/lib/aws.sh
 source .buildkite/scripts/lib/packer.sh
 
 export GIT_SHA="${BUILDKITE_COMMIT}"
@@ -23,6 +24,10 @@ build_packer_ci() {
 
     # Both defined in packer.sh
     build_ami "${PACKER_IMAGE_NAME}"
+
+    # HACK; see documentation of this function for details
+    unset_aws_variables
+
     upload_manifest "${PACKER_IMAGE_NAME}"
 }
 
