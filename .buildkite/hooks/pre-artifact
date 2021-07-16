@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Drop any AssumeRole credentials prior to artifact upload, so we can
+# upload to our private bucket.
+if [ "${BUILDKITE_STEP_KEY}" == "pre-artifact" ]; then
+
+    echo "--- Before dropping credentials"
+    aws sts get-caller-identity
+
+    echo "--- Unsetting AWS environment variables set by aws-assume-role plugin"
+    unset AWS_ACCESS_KEY_ID
+    unset AWS_SECRET_ACCESS_KEY
+    unset AWS_SESSION_TOKEN
+
+    echo "--- After dropping credentials"
+    aws sts get-caller-identity
+fi
