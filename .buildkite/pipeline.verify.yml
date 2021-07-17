@@ -190,6 +190,7 @@ steps:
           environment:
             - "BUILDKITE_ARTIFACT_UPLOAD_DESTINATION"
             - "BUILDKITE_S3_DEFAULT_REGION"
+            - "BUILDKITE_STEP_KEY"
     agents:
       queue: "packer-staging"
 
