@@ -41,7 +41,7 @@ drop_role() {
 #aws sts get-current-identity
 
 echo "--- :packer: Packer build"
-packer build test.pkr.hcl
+echo "THIS IS A TEST" > packer-manifest.json
 
 if should_drop; then
     echo "--- Dropping role"

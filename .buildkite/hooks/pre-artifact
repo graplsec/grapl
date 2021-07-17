@@ -7,6 +7,11 @@ if [ "${BUILDKITE_STEP_KEY}" == "pre-artifact" ]; then
     echo "--- Before dropping credentials"
     aws sts get-caller-identity
 
+    echo "--- S3 ls"
+    set +e
+    aws s3 ls s3://grapl-buildkite-artifacts-ecfff1a
+    set -e
+
     echo "--- Unsetting AWS environment variables set by aws-assume-role plugin"
     unset AWS_ACCESS_KEY_ID
     unset AWS_SECRET_ACCESS_KEY
@@ -14,4 +19,10 @@ if [ "${BUILDKITE_STEP_KEY}" == "pre-artifact" ]; then
 
     echo "--- After dropping credentials"
     aws sts get-caller-identity
+
+    echo "--- S3 ls"
+    set +e
+    aws s3 ls s3://grapl-buildkite-artifacts-ecfff1a
+    set -e
+
 fi
