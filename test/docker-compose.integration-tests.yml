@@ -1,6 +1,18 @@
 version: "3.8"
 
 # environment variable PWD is assumed to be grapl root directory
+x-common-variables:
+  # All the Pants-based tests can be run from the same image
+  pants-image: &pants-image
+    image: grapl/pants
+    build:
+      context: ${PWD}
+      dockerfile: ${PWD}/pants.Dockerfile
+      target: base
+  pants-test: &pants-test
+    PANTS_TEST_OUTPUT: "all"
+    PANTS_PYTEST_ARGS: "-v -m 'integration_test'"
+    TOOLCHAIN_AUTH_TOKEN:
 
 services:
   rust-integration-tests:
@@ -37,59 +49,46 @@ services:
       - REDIS_ENDPOINT
 
   analyzerlib-integration-tests:
-    image: grapl/analyzerlib-test:${TAG:-latest}
-    build:
-      context: ${PWD}
-      dockerfile: ./src/python/Dockerfile
-      target: grapl-analyzerlib-test
-    command: bash -c '
-      cd grapl_analyzerlib &&
-      py.test -v -n auto -m "integration_test"'
+    <<: *pants-image
+    command: >
+      ./pants test --extra-env-vars="['DEPLOYMENT_NAME','GRAPL_LOG_LEVEL','MG_ALPHAS']" src/python/grapl_analyzerlib::
     environment:
-      - GRAPL_LOG_LEVEL=${GRAPL_LOG_LEVEL:-INFO}
-      - DEPLOYMENT_NAME
-      - MG_ALPHAS
+      <<: *pants-test
+      GRAPL_LOG_LEVEL: ${GRAPL_LOG_LEVEL:-INFO}
+      DEPLOYMENT_NAME:
+      MG_ALPHAS:
 
   # grapl-analyzer-deployer-integration-tests:
 
   analyzer-executor-integration-tests:
-    image: grapl/analyzer-executor-test:${TAG:-latest}
-    build:
-      context: ${PWD}
-      dockerfile: ./src/python/Dockerfile
-      target: analyzer-executor-test
-    command: bash -c '
-      cd analyzer_executor &&
-      export PYTHONPATH="$${PYTHONPATH}:$$(pwd)/src" &&
-      py.test -n auto -m "integration_test"'
+    <<: *pants-image
+    command: >
+      ./pants test --extra-env-vars="['HITCACHE_ADDR','HITCACHE_PORT','MESSAGECACHE_ADDR','MESSAGECACHE_PORT','GRAPL_LOG_LEVEL','IS_RETRY']" src/python/analyzer_executor::
     environment:
-      - HITCACHE_ADDR=${REDIS_HOST}
-      - HITCACHE_PORT=${REDIS_PORT}
-      - MESSAGECACHE_ADDR=${REDIS_HOST}
-      - MESSAGECACHE_PORT=${REDIS_PORT}
-      - GRAPL_LOG_LEVEL=${GRAPL_LOG_LEVEL:-INFO}
-      - IS_RETRY=False
+      <<: *pants-test
+      HITCACHE_ADDR: ${REDIS_HOST}
+      HITCACHE_PORT: ${REDIS_PORT}
+      MESSAGECACHE_ADDR: ${REDIS_HOST}
+      MESSAGECACHE_PORT: ${REDIS_PORT}
+      GRAPL_LOG_LEVEL: ${GRAPL_LOG_LEVEL:-INFO}
+      IS_RETRY: "False"
 
   engagement-edge-integration-tests:
-    image: grapl/grapl-engagement-edge-test:${TAG:-latest}
-    build:
-      context: ${PWD}
-      dockerfile: ./src/python/Dockerfile
-      target: engagement-edge-test
-    command: bash -c '
-      cd engagement_edge &&
-      py.test -n auto -m "integration_test"'
+    <<: *pants-image
+    command: >
+      ./pants test --extra-env-vars="['DEPLOYMENT_NAME','UX_BUCKET_URL','GRAPL_API_HOST','GRAPL_HTTP_FRONTEND_PORT','IS_LOCAL','AWS_REGION','GRAPL_AWS_ACCESS_KEY_ID','GRAPL_AWS_ACCESS_KEY_SECRET','GRAPL_AWS_ENDPOINT','GRAPL_TEST_USER_NAME']" src/python/engagement_edge::
     environment:
-      - AWS_REGION
-      - DEPLOYMENT_NAME
-      - GRAPL_API_HOST
-      - GRAPL_AWS_ACCESS_KEY_ID
-      - GRAPL_AWS_ACCESS_KEY_SECRET
-      - GRAPL_AWS_ENDPOINT
-      - GRAPL_HTTP_FRONTEND_PORT
-      - GRAPL_TEST_USER_NAME
-      - IS_LOCAL=True
-      - UX_BUCKET_URL="ux_bucket_url"
+      AWS_REGION:
+      GRAPL_AWS_ACCESS_KEY_ID:
+      GRAPL_AWS_ACCESS_KEY_SECRET:
+      GRAPL_AWS_ENDPOINT:
+      GRAPL_TEST_USER_NAME:
+      IS_LOCAL: "True"
+      <<: *pants-test
+      DEPLOYMENT_NAME:
+      UX_BUCKET_URL: "ux_bucket_url"
+      GRAPL_API_HOST:
+      GRAPL_HTTP_FRONTEND_PORT:
 
   # TODO: Re-enable these tests after the following issues are resolved:
   # - https://github.com/grapl-security/issue-tracker/issues/385
@@ -113,30 +112,28 @@ services:
   #     - GRAPL_API_HOST
 
   graphql-endpoint-tests:
-    image: grapl/graphql-endpoint-tests:${TAG:-latest}
-    build:
-      context: ${PWD}
-      dockerfile: ./src/python/Dockerfile
-      target: graphql-endpoint-tests
-    command: |
-      /bin/bash -c '
-        cd graphql_endpoint_tests &&
-        py.test --capture=no -n 1 -m "integration_test"
-      '
+    <<: *pants-image
+    command: >
+      ./pants test --extra-env-vars="['AWS_REGION','DEBUG_SERVICES','DEPLOYMENT_NAME','GRAPL_AWS_ENDPOINT','GRAPL_AWS_ACCESS_KEY_ID','GRAPL_AWS_ACCESS_KEY_SECRET','GRAPL_AWS_ENDPOINT','GRAPL_API_HOST','GRAPL_HTTP_FRONTEND_PORT','GRAPL_GRAPHQL_HOST','GRAPL_GRAPHQL_PORT','GRAPL_MODEL_PLUGIN_DEPLOYER_HOST','GRAPL_MODEL_PLUGIN_DEPLOYER_PORT','GRAPL_LOG_LEVEL','MG_ALPHAS','VSC_DEBUGGER_PORT','IS_LOCAL','GRAPL_TEST_USER_NAME']" src/python/graphql_endpoint_tests::
     environment:
-      - AWS_REGION
-      - DEBUG_SERVICES=${DEBUG_SERVICES:-}
-      - DEPLOYMENT_NAME
-      - GRAPL_API_HOST
-      - GRAPL_AWS_ACCESS_KEY_ID
-      - GRAPL_AWS_ACCESS_KEY_SECRET
-      - GRAPL_AWS_ENDPOINT
-      - GRAPL_HTTP_FRONTEND_PORT
-      - GRAPL_LOG_LEVEL=${GRAPL_LOG_LEVEL:-INFO}
-      - GRAPL_TEST_USER_NAME
-      - IS_LOCAL=True
-      - MG_ALPHAS
-      - VSC_DEBUGGER_PORT=${VSC_DEBUGGER_PORT_FOR_GRAPHQL_ENDPOINT_TESTS}
+      GRAPL_AWS_ACCESS_KEY_ID:
+      GRAPL_AWS_ACCESS_KEY_SECRET:
+      GRAPL_AWS_ENDPOINT:
+      GRAPL_TEST_USER_NAME:
+      IS_LOCAL: "True"
+      <<: *pants-test
+      AWS_REGION:
+      DEBUG_SERVICES: ${DEBUG_SERVICES:-}
+      DEPLOYMENT_NAME:
+      GRAPL_API_HOST:
+      GRAPL_HTTP_FRONTEND_PORT:
+      GRAPL_GRAPHQL_HOST:
+      GRAPL_GRAPHQL_PORT:
+      GRAPL_MODEL_PLUGIN_DEPLOYER_HOST:
+      GRAPL_MODEL_PLUGIN_DEPLOYER_PORT:
+      GRAPL_LOG_LEVEL: ${GRAPL_LOG_LEVEL:-INFO}
+      MG_ALPHAS:
+      VSC_DEBUGGER_PORT: ${VSC_DEBUGGER_PORT_FOR_GRAPHQL_ENDPOINT_TESTS}
     ports:
       - ${VSC_DEBUGGER_PORT_FOR_GRAPHQL_ENDPOINT_TESTS}:${VSC_DEBUGGER_PORT_FOR_GRAPHQL_ENDPOINT_TESTS}
 

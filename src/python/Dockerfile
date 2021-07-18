@@ -141,33 +141,6 @@ ENV IS_RETRY=False
 COPY --chown=grapl --from=python-test-deps /home/grapl/python_test_deps python_test_deps
 RUN python_test_deps/install_requirements.sh
 
-# engagement-edge
-################################################################################
-
-# build
-FROM grapl-python-build AS engagement-edge-build
-
-COPY --chown=grapl src/python/engagement_edge engagement_edge
-COPY --chown=grapl --from=grapl-analyzerlib-build /home/grapl/venv venv
-
-RUN cd engagement_edge && \
-    pip install .
-
-# test
-FROM engagement-edge-build AS engagement-edge-test
-
-ENV DEPLOYMENT_NAME=local-grapl
-ENV UX_BUCKET_URL="ux_bucket_url"
-
-## Install test requirements
-COPY --chown=grapl --from=python-test-deps /home/grapl/python_test_deps python_test_deps
-RUN python_test_deps/install_requirements.sh
-
-## Steal and install grapl-tests-common
-COPY --chown=grapl src/python/grapl-tests-common grapl-tests-common
-RUN cd grapl-tests-common && \
-    pip install .
-
 # model-plugin-deployer
 ################################################################################
 
