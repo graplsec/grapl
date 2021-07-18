@@ -7,11 +7,7 @@ SHELL ["/bin/bash", "-c"]
 # Necessary for rdkafka
 RUN --mount=type=cache,target=/var/lib/apt/lists \
     apt-get update && apt-get install -y --no-install-recommends \
-        python3 \
-        cmake \
-        libzstd-dev \
-        build-essential \
-        zlib1g-dev
+        build-essential
 
 # Install rust toolchain before copying sources to avoid unecessarily
 # resinstalling on source file changes.
