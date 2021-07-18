@@ -97,6 +97,7 @@ def src_python_execution_environment() -> Dict[str, Union[str, List[str]]]:
         )
     ]
     relativized = [root.lstrip("/") for root in filtered]
+    relativized.append("dist/codegen")
 
     return {"root": "src/python", "extraPaths": relativized}
 
