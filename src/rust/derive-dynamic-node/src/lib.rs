@@ -98,21 +98,21 @@ pub fn derive_node_description(input: TokenStream) -> TokenStream {
 
         #[derive(Clone, Debug)]
         pub struct #node_name {
-            dynamic_node: grapl_graph_descriptions::graph_description::NodeDescription,
+            dynamic_node: rust_proto::graph_descriptions::NodeDescription,
         }
 
         pub trait #node_trait_name {
-            fn get_mut_dynamic_node(&mut self) -> &mut grapl_graph_descriptions::graph_description::NodeDescription;
-            fn get_dynamic_node(&self) -> &grapl_graph_descriptions::graph_description::NodeDescription;
+            fn get_mut_dynamic_node(&mut self) -> &mut rust_proto::graph_descriptions::NodeDescription;
+            fn get_dynamic_node(&self) -> &rust_proto::graph_descriptions::NodeDescription;
 
             #methods
         }
 
         impl #node_name {
-            pub fn new(strategy: grapl_graph_descriptions::graph_description::IdStrategy) -> Self {
+            pub fn new(strategy: rust_proto::graph_descriptions::IdStrategy) -> Self {
                 let mut properties = std::collections::HashMap::with_capacity(1);
 
-                let dynamic_node = grapl_graph_descriptions::graph_description::NodeDescription {
+                let dynamic_node = rust_proto::graph_descriptions::NodeDescription {
                     node_type: #struct_name_string .to_owned(),
                     id_strategy: vec![strategy],
                     node_key: uuid::Uuid::new_v4().to_string(),
@@ -135,20 +135,20 @@ pub fn derive_node_description(input: TokenStream) -> TokenStream {
             }
         }
 
-        impl AsRef<grapl_graph_descriptions::graph_description::NodeDescription> for #node_name {
+        impl AsRef<rust_proto::graph_descriptions::NodeDescription> for #node_name {
             fn as_ref(&self) -> &NodeDescription {
                 &self.dynamic_node
             }
         }
 
-        impl AsMut<grapl_graph_descriptions::graph_description::NodeDescription> for #node_name {
+        impl AsMut<rust_proto::graph_descriptions::NodeDescription> for #node_name {
             fn as_mut(&mut self) -> &mut NodeDescription {
                 &mut self.dynamic_node
             }
         }
 
-        impl From<#node_name> for grapl_graph_descriptions::graph_description::NodeDescription {
-            fn from(n: #node_name) -> grapl_graph_descriptions::graph_description::NodeDescription {
+        impl From<#node_name> for rust_proto::graph_descriptions::NodeDescription {
+            fn from(n: #node_name) -> rust_proto::graph_descriptions::NodeDescription {
                 n.dynamic_node
             }
         }
@@ -350,35 +350,35 @@ fn resolvable_type_from(
             match (typepath.as_ref(), resolution_name) {
                 /* underlying struct field type    maps to this type   via this method on NodeProperty */
                 ("String", IMMUTABLE) => (
-                    parse_quote!(grapl_graph_descriptions::ImmutableStrProp),
+                    parse_quote!(rust_proto::graph_descriptions::ImmutableStrProp),
                     parse_quote!(as_immutable_str),
                 ),
                 ("std::string::String", IMMUTABLE) => (
-                    parse_quote!(grapl_graph_descriptions::ImmutableStrProp),
+                    parse_quote!(rust_proto::graph_descriptions::ImmutableStrProp),
                     parse_quote!(as_immutable_str),
                 ),
                 ("u64", IMMUTABLE) => (
-                    parse_quote!(grapl_graph_descriptions::ImmutableUintProp),
+                    parse_quote!(rust_proto::graph_descriptions::ImmutableUintProp),
                     parse_quote!(as_immutable_uint),
                 ),
                 ("u64", INCREMENT) => (
-                    parse_quote!(grapl_graph_descriptions::IncrementOnlyUintProp),
+                    parse_quote!(rust_proto::graph_descriptions::IncrementOnlyUintProp),
                     parse_quote!(as_increment_only_uint),
                 ),
                 ("u64", DECREMENT) => (
-                    parse_quote!(grapl_graph_descriptions::DecrementOnlyUintProp),
+                    parse_quote!(rust_proto::graph_descriptions::DecrementOnlyUintProp),
                     parse_quote!(as_decrement_only_uint),
                 ),
                 ("i64", IMMUTABLE) => (
-                    parse_quote!(grapl_graph_descriptions::ImmutableIntProp),
+                    parse_quote!(rust_proto::graph_descriptions::ImmutableIntProp),
                     parse_quote!(as_immutable_int),
                 ),
                 ("i64", INCREMENT) => (
-                    parse_quote!(grapl_graph_descriptions::IncrementOnlyIntProp),
+                    parse_quote!(rust_proto::graph_descriptions::IncrementOnlyIntProp),
                     parse_quote!(as_increment_only_int),
                 ),
                 ("i64", DECREMENT) => (
-                    parse_quote!(grapl_graph_descriptions::DecrementOnlyIntProp),
+                    parse_quote!(rust_proto::graph_descriptions::DecrementOnlyIntProp),
                     parse_quote!(as_decrement_only_int),
                 ),
                 _ => return None,
@@ -426,8 +426,8 @@ fn identity_prop_setter(field: &Field, property_name: &Ident) -> TS2 {
     quote!(
         let mut self_strategy = mut_self.id_strategy[0].strategy.as_mut().unwrap();
         match self_strategy {
-            grapl_graph_descriptions::graph_description::id_strategy::Strategy::Session(
-                grapl_graph_descriptions::graph_description::Session{ref mut #ident, ..}
+            rust_proto::graph_descriptions::id_strategy::Strategy::Session(
+                rust_proto::graph_descriptions::Session{ref mut #ident, ..}
             ) => {
                 * #ident = #property_name.as_inner();
             }

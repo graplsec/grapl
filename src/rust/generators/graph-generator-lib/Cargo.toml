@@ -7,7 +7,7 @@ description = "Library for writing Grapl generator services"
 license = "Apache-2.0"
 
 [dependencies]
-grapl-graph-descriptions = { path="../../graph-descriptions", version="0.2.*" }
+rust-proto = { path="../../rust-proto", version="0.2.*" }
 sqs-executor = {path="../../sqs-executor"}
 grapl-service = {path="../../grapl-service"}
 

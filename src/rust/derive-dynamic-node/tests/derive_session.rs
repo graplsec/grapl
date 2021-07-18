@@ -2,7 +2,7 @@ use derive_dynamic_node::{
     GraplSessionId,
     NodeDescription,
 };
-use grapl_graph_descriptions::graph_description::*;
+use rust_proto::graph_descriptions::*;
 
 #[derive(NodeDescription, GraplSessionId)]
 pub struct SpecialProcess {
@@ -45,9 +45,7 @@ fn test_session() {
         .unwrap();
 
     let strategy = match strategy {
-        grapl_graph_descriptions::graph_description::id_strategy::Strategy::Session(strategy) => {
-            strategy
-        }
+        rust_proto::graph_descriptions::id_strategy::Strategy::Session(strategy) => strategy,
         _ => panic!("Expected session"),
     };
     assert_eq!(strategy.create_time, 0u64);

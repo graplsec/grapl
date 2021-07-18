@@ -3,8 +3,8 @@ use derive_dynamic_node::{
     GraplStaticId,
     NodeDescription,
 };
-use grapl_graph_descriptions::graph_description::*;
 use log::info;
+use rust_proto::graph_descriptions::*;
 use serde_derive::Deserialize;
 
 fn read_log() -> &'static [u8] {

@@ -15,7 +15,7 @@ name = "generator_bench"
 harness = false
 
 [dependencies]
-grapl-graph-descriptions = { path="../../graph-descriptions", version="*" }
+rust-proto = { path="../../rust-proto", version="*" }
 endpoint-plugin = { path="../../endpoint-plugin", version="*" }
 grapl-config = { path = "../../grapl-config", version="*" }
 grapl-observe = { path = "../../grapl-observe", version="*" }

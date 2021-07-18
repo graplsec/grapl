@@ -5,7 +5,7 @@ authors = ["Insanitybit <insanitybit@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-grapl-graph-descriptions = { path="../graph-descriptions", version="*" }
+rust-proto = { path="../rust-proto", version="*" }
 grapl-config = {path="../grapl-config", version="*"}
 grapl-observe = {path = "../grapl-observe"}
 grapl-service = {path="../grapl-service"}

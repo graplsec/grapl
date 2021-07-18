@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use grapl_graph_descriptions::graph_description::*;
+use rust_proto::graph_descriptions::*;
 use sqs_executor::{
     cache::Cache,
     errors::{

@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package graplinc.grapl.api.services.v1beta1;
+
+// A protobuf uuid, encoded by splitting the 128bit representation into two 64bit values
+message ProtoUuidV4 {
+  // Least significant bytes
+  fixed64 lsb = 1;
+  // Most significant bytes
+  fixed64 msb = 2;
+}
+
+// Metadata about a specific message, or its context
+message Metadata {
+  // Customer identity
+  ProtoUuidV4 tenant_id = 1;
+  // Unique identity representing a unified request throughout Grapl
+  ProtoUuidV4 trace_id = 2;
+}
+
+// A generic wrapper around other messages
+message Envelope {
+  // Metadata about this message
+  Metadata metadata = 1;
+  // The string name of this message's type
+  // This needs to be the fully-qualified name of the protobuf type used to serialize this message
+  // ex: "graplinc.grapl.api.graph.v1beta1.GraphDescription"
+  string inner_type = 2;
+  // The raw encoded bytes of the inner message
+  bytes inner_message = 3;
+}

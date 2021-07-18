@@ -3,7 +3,7 @@ use chrono::{
     NaiveDateTime,
     Utc,
 };
-use grapl_graph_descriptions::graph_description::*;
+use rust_proto::graph_descriptions::*;
 use sysmon::Event;
 
 use crate::generator::SysmonGeneratorError;
@@ -12,7 +12,7 @@ mod file;
 mod network;
 mod process;
 
-/// Because this crate doesn't own sysmon::Event nor grapl_graph_descriptions::graph_description::GraphDescription
+/// Because this crate doesn't own sysmon::Event nor rust_proto::graph_descriptions::GraphDescription
 /// we need to create a new Trait to add a function to graph for Event.
 ///
 /// Mimics TryFrom

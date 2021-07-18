@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-grapl-graph-descriptions = { path="../graph-descriptions", version="*" }
+rust-proto = { path="../rust-proto", version="*" }
 derive-dynamic-node = { path="../derive-dynamic-node" }
 uuid = { version = "0.8", features=["v4"] }
 thiserror = "1.0"

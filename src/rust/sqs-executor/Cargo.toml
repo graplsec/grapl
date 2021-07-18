@@ -12,6 +12,7 @@ integration = []
 [dependencies]
 grapl-observe = { path = "../grapl-observe" }
 grapl-utils = { path = "../grapl-utils" }
+rust-proto = { path = "../rust-proto/" }
 
 rusoto_core = {version = "0.46", default_features = false, features=["rustls"]}
 rusoto_s3 = {version = "0.46", default_features = false, features=["rustls"]}

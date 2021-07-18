@@ -1,9 +1,5 @@
 use std::collections::HashMap;
 
-use grapl_graph_descriptions::{
-    graph_description::*,
-    node_property::Property,
-};
 use node_property::Property::{
     DecrementOnlyInt as ProtoDecrementOnlyIntProp,
     DecrementOnlyUint as ProtoDecrementOnlyUintProp,
@@ -12,6 +8,10 @@ use node_property::Property::{
     ImmutableUint as ProtoImmutableUintProp,
     IncrementOnlyInt as ProtoIncrementOnlyIntProp,
     IncrementOnlyUint as ProtoIncrementOnlyUintProp,
+};
+use rust_proto::{
+    graph_descriptions::*,
+    node_property::Property,
 };
 
 pub struct Escaped(String);

@@ -1,5 +1,3 @@
-// #![allow(unused_must_use)]
-
 use std::collections::HashMap;
 
 use async_trait::async_trait;
@@ -15,12 +13,6 @@ use grapl_config::{
     },
     event_caches,
 };
-use grapl_graph_descriptions::graph_description::{
-    GraphDescription,
-    IdentifiedGraph,
-    IdentifiedNode,
-    NodeDescription,
-};
 use grapl_observe::metric_reporter::MetricReporter;
 use grapl_service::{
     decoder::ProtoDecoder,
@@ -29,6 +21,12 @@ use grapl_service::{
 use grapl_utils::rusoto_ext::dynamodb::GraplDynamoDbClientExt;
 use rusoto_dynamodb::DynamoDbClient;
 use rusoto_sqs::SqsClient;
+use rust_proto::graph_descriptions::{
+    GraphDescription,
+    IdentifiedGraph,
+    IdentifiedNode,
+    NodeDescription,
+};
 use sessiondb::SessionDb;
 use sqs_executor::{
     cache::Cache,
@@ -59,8 +57,8 @@ pub mod sessions;
 
     The strategies come in two variants:
 
-    * [Session](`grapl_graph_descriptions::graph_description::Session`) - strategy used for nodes with lifetimes (e.g. process, network connection)
-    * [Static](`grapl_graph_descriptions::graph_description::Static`) - strategy used for nodes with canonical and unique identifiers (e.g. aws events)
+    * [Session](`rust_proto::graph_descriptions::Session`) - strategy used for nodes with lifetimes (e.g. process, network connection)
+    * [Static](`rust_proto::graph_descriptions::Static`) - strategy used for nodes with canonical and unique identifiers (e.g. aws events)
 */
 #[derive(Clone)]
 pub struct NodeIdentifier<D, CacheT>
@@ -213,7 +211,7 @@ where
     #[tracing::instrument(skip(self, unidentified_subgraph, _completed))]
     async fn handle_event(
         &mut self,
-        unidentified_subgraph: GraphDescription,
+        unidentified_subgraph: Self::InputEvent,
         _completed: &mut CompletedEvents,
     ) -> Result<Self::OutputEvent, Result<(Self::OutputEvent, Self::Error), Self::Error>> {
         /*

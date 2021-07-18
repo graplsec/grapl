@@ -35,7 +35,7 @@ pub mod test {
         Query,
     };
     use graph_merger_lib::upserter::GraphMergeHelper;
-    use grapl_graph_descriptions::*;
+    use rust_proto::*;
 
     async fn query_for_uid(dgraph_client: Arc<DgraphClient>, node_key: &str) -> u64 {
         let query_block = QueryBlockBuilder::default()

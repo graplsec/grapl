@@ -1,0 +1,30 @@
+[package]
+name = "rust-proto"
+version = "0.2.10"
+authors = ["Insanitybit <insanitybit@gmail.com>"]
+edition = "2018"
+description = "A library for interacting with Grapl graphs"
+license = "MIT"
+
+[dependencies]
+log = "0.4"
+prost = "0.7"
+prost-derive = "0.7"
+prost-types = "0.7"
+rand = "0.8"
+serde = "1"
+serde_derive = "1"
+tracing = "0.1.22"
+uuid = { version = "0.8.2", features = ["v4"] }
+
+[build-dependencies]
+prost-build = "0.7"
+
+[dev-dependencies]
+quickcheck = "1.0"
+quickcheck_macros = { version="1" }
+tracing-subscriber = "0.2"
+
+[features]
+default = []
+extra_assertions = []

@@ -1,4 +1,4 @@
-use grapl_graph_descriptions::{graph_description::*,
+use rust_proto::{graph_descriptions::*,
                                network_connection::NetworkConnectionState,
                                node::NodeT,
                                process::ProcessState,

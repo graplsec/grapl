@@ -33,7 +33,7 @@ Then, in your favorite IDE, navigate to the `src/lib.rs` file, where we’ll put
 
 
     use derive_dynamic_node::{DynamicNode as DeriveDynamicNode, GraplStaticId};
-    use grapl_graph_descriptions::graph_description::*;
+    use rust_proto::graph_descriptions::*;
     
     #[derive(Clone, DeriveDynamicNode, GraplStaticId)]
     struct Ec2Instance {

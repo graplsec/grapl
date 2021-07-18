@@ -7,16 +7,16 @@ use failure::{
     bail,
     Error,
 };
-use grapl_graph_descriptions::graph_description::{
-    id_strategy,
-    Session as SessionStrategy,
-    *,
-};
 use rusoto_dynamodb::{
     AttributeValue,
     DynamoDb,
     GetItemInput,
     PutItemInput,
+};
+use rust_proto::graph_descriptions::{
+    id_strategy,
+    Session as SessionStrategy,
+    *,
 };
 use serde::{
     Deserialize,

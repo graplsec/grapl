@@ -10,4 +10,4 @@ license = "Apache-2.0"
 derive-dynamic-node = { path="../derive-dynamic-node" }
 graph-generator-lib = { path = "../generators/graph-generator-lib/" }
 grapl-config = { path="../grapl-config" }
-grapl-graph-descriptions = { path="../graph-descriptions" }
+rust-proto = { path="../rust-proto" }

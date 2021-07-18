@@ -12,7 +12,6 @@ use grapl_config::env_helpers::{
     s3_event_emitters_from_env,
     FromEnv,
 };
-use grapl_graph_descriptions::graph_description::*;
 use grapl_observe::metric_reporter::MetricReporter;
 use grapl_service::decoder::ProtoDecoder;
 use log::{
@@ -27,6 +26,7 @@ use rusoto_s3::{
     S3,
 };
 use rusoto_sqs::SqsClient;
+use rust_proto::graph_descriptions::*;
 use sqs_executor::{
     cache::NopCache,
     errors::{
@@ -44,6 +44,7 @@ use sqs_executor::{
 
 use crate::dispatch_event::{
     AnalyzerDispatchEvent,
+    AnalyzerDispatchEvents,
     AnalyzerDispatchSerializer,
 };
 
@@ -115,7 +116,7 @@ where
     S: S3 + Send + Sync + 'static,
 {
     type InputEvent = MergedGraph;
-    type OutputEvent = Vec<AnalyzerDispatchEvent>;
+    type OutputEvent = AnalyzerDispatchEvents;
     type Error = AnalyzerDispatcherError;
 
     async fn handle_event(
@@ -127,7 +128,7 @@ where
 
         if subgraph.is_empty() {
             warn!("Attempted to handle empty subgraph");
-            return Ok(vec![]);
+            return Ok(AnalyzerDispatchEvents::new());
         }
 
         info!("Retrieving S3 keys");
@@ -159,11 +160,11 @@ where
 
         if let Some(e) = failed {
             Err(Ok((
-                dispatch_events,
+                AnalyzerDispatchEvents::from(dispatch_events),
                 AnalyzerDispatcherError::Unexpected(e.to_string()),
             )))
         } else {
-            Ok(dispatch_events)
+            Ok(AnalyzerDispatchEvents::from(dispatch_events))
         }
     }
 }

@@ -8,7 +8,7 @@ edition = "2018"
 
 [dependencies]
 sqs-executor = { path = "../sqs-executor" }
-grapl-graph-descriptions = { path = "../graph-descriptions" }
+rust-proto = { path = "../rust-proto" }
 grapl-config = { path = "../grapl-config" }
 
 zstd = "0.7"

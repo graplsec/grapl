@@ -11,6 +11,7 @@ from sys import maxsize
 from typing import TYPE_CHECKING, Iterator, List, Optional, cast
 
 from grapl_common.env_helpers import S3ClientFactory, SQSClientFactory
+from grapl_common.envelope import Envelope, Metadata
 
 if TYPE_CHECKING:
     from mypy_boto3_s3 import S3Client
@@ -144,7 +145,13 @@ def upload_logs(
             + str(epoch)
             + rand_str(6)
         )
-        s3.put_object(Body=chunk_body, Bucket=bucket, Key=key)
+        envelope = Envelope(
+            metadata=Metadata.new(),
+            inner_message=chunk_body,
+            inner_type="RawEvents",
+        )
+
+        s3.put_object(Body=envelope.to_proto_bytes(), Bucket=bucket, Key=key)
 
         # local-grapl relies on manual eventing
         if requires_manual_eventing:

@@ -6,7 +6,7 @@ use endpoint_plugin::{
     IProcessNode,
     ProcessNode,
 };
-use grapl_graph_descriptions::graph_description::*;
+use rust_proto::graph_descriptions::*;
 use sysmon::ProcessCreateEvent;
 
 use crate::{
@@ -95,8 +95,8 @@ pub fn generate_process_create_subgraph(
 mod tests {
     use std::str::FromStr;
 
-    use grapl_graph_descriptions::{
-        graph_description::node_property::Property,
+    use rust_proto::graph_descriptions::{
+        node_property::Property,
         ImmutableUintProp,
     };
     use sysmon::*;
