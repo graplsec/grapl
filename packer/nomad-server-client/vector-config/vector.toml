@@ -1,0 +1,17 @@
+# We are trying to follow the 'log shipper pattern':
+# https://learn.hashicorp.com/tutorials/nomad/jobs-accessing-logs
+# Basically, after each Nomad task, you can run a binary afterwards that's just 
+# "hey, ship these logs to Kafka!"
+
+# Disclaimer: I make zero claim that this config works yet - wimax Jul 2021
+
+[sources.nomad_logs]
+type = "file"
+# TBD: Does this need to be fully qualified path?
+include = ["alloc/logs"]
+
+[sinks.kafka_out]
+inputs = ["in"]
+type = "kafka"
+# TBD: Different topic per service?
+topic = "nomad-logs"

@@ -38,6 +38,12 @@ variable "nomad_version" {
   default     = "1.1.1"
 }
 
+variable "vector_version" {
+  description = "Version of Vector to use"
+  type        = string
+  default     = "0.15.0"
+}
+
 variable "git_sha" {
   description = "The git SHA of the commit the AMI is being generated from. If present, will be used to tag the AMI."
   type        = string
@@ -199,6 +205,20 @@ build {
       "sudo cp /tmp/nomad-config/${local.config_file_names} /opt/nomad/config",
       "sudo cp /tmp/consul-config/${local.config_file_names} /opt/consul/config",
     ]
+  }
+
+  provisioner "shell" {
+    environment_vars = [
+      "VECTOR_VERSION=${var.vector_version}",
+    ]
+    script = "${path.root}/setup_vector.sh"
+  }
+
+  # `vector` invokes will need to specify this config, like
+  # `vector -c /tmp/vector-config/vector.toml`
+  provisioner "file" {
+    source      = "${path.root}/vector-config"
+    destination = "/tmp/"
   }
 
   post-processor "manifest" {
