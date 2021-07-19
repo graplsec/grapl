@@ -10,151 +10,172 @@ env:
 # TODO: possibly just us Docker for caching?
 
 steps:
-  - label: ":github: Validate CODEOWNERS"
-    command: ".buildkite/scripts/validate_codeowners.sh"
+  # - label: ":github: Validate CODEOWNERS"
+  #   command: ".buildkite/scripts/validate_codeowners.sh"
+  #   plugins:
+  #     - docker#v3.8.0:
+  #         image: "node"
+  #         entrypoint: "bash"
+
+  # - label: ":large_blue_square::lint-roller: Lint Protobuf"
+  #   command:
+  #     - buf lint --verbose
+
+  # - label: ":large_blue_square::face_with_symbols_on_mouth: Protobuf Breaking Changes"
+  #   command:
+  #     - "buf breaking --against=https://github.com/grapl-security/grapl.git --verbose"
+
+  # - label: ":rust: rustfmt"
+  #   command:
+  #     - cd src/rust
+  #     - rustup set profile default
+  #     - bin/format --check
+
+  # - label: ":rust: Linting"
+  #   command:
+  #     - cd src/rust
+  #     - bin/lint
+  #   agents:
+  #     queue: "beefy"
+
+  # - label: ":rust: Unit Tests"
+  #   command:
+  #     - cd src/rust
+  #     - cargo test
+  #   agents:
+  #     queue: "beefy"
+
+  # - label: ":rust: Unit Tests via Docker plugin"
+  #   command:
+  #     - cd src/rust
+  #     - cargo test
+  #   plugins:
+  #     - docker#v3.8.0:
+  #         image: "rust:1.51.0"
+  #   agents:
+  #     queue: "beefy"
+
+  # - label: ":rust::docker: Unit Tests"
+  #   command:
+  #     - make test-unit-rust
+  #   agents:
+  #     queue: "beefy"
+
+  # - label: ":python::jeans: Linting"
+  #   command:
+  #     - make lint-python
+  #   retry:
+  #     automatic:
+  #       limit: 3
+
+  # - label: ":bash::jeans: Linting"
+  #   command:
+  #     - make lint-shell
+
+  # - label: ":python::jeans: Unit Tests"
+  #   command:
+  #     - make test-unit-python
+  #   retry:
+  #     automatic:
+  #       limit: 3
+
+  # - label: ":python::jeans: Typechecking"
+  #   command:
+  #     - make test-typecheck-pants
+  #   retry:
+  #     automatic:
+  #       limit: 3
+
+  # # TODO: Consider beefy queue
+  # - label: ":python::docker: Typechecking (:no_entry_sign::jeans:)"
+  #   command:
+  #     - make test-typecheck-docker
+
+  # # TODO: Consider beefy queue
+  # - label: ":typescript::docker: Unit Tests"
+  #   command:
+  #     - make test-unit-js
+
+  # - label: ":typescript::yaml::lint-roller: Lint using Prettier"
+  #   command:
+  #     - make lint-prettier
+
+  # - label: ":yarn: Build UX"
+  #   command: make build-ux
+  #   plugins:
+  #     - docker#v3.8.0:
+  #         # This container actually contains `make`, too!
+  #         image: "node:16.5.0"
+
+  # - label: ":aws-lambda::package: Create Lambda Zips"
+  #   command:
+  #     - make lambdas
+  #   agents:
+  #     queue: "beefy"
+
+  # - label: ":hammer: Integration Tests"
+  #   command:
+  #     - .buildkite/scripts/integration.sh
+  #   agents:
+  #     queue: "beefy"
+  #   artifact_paths:
+  #     - "test_artifacts/**/*"
+
+  # - label: ":hammer: E2E Tests"
+  #   command:
+  #     - .buildkite/scripts/e2e.sh
+  #   agents:
+  #     queue: "beefy"
+  #   artifact_paths:
+  #     - "test_artifacts/**/*"
+
+  # - label: ":packer::lint-roller: Packer Linting"
+  #   command:
+  #     # Since we run it in a container, we can't use the `make` for it
+  #     - .buildkite/scripts/lint_packer.sh
+  #   # Silently hangs unless the following is specified.
+  #   plugins:
+  #     - docker#v3.8.0:
+  #         image: "hashicorp/packer:1.7.2"
+  #         entrypoint: bash
+
+  # - label: ":thinking_face: AMI Test?"
+  #   # Don't want to run this again in the merge pipeline, since
+  #   # building the image does exactly the same thing. We don't want to
+  #   # waste time.
+  #   if: build.env("BUILDKITE_PIPELINE_NAME") == "grapl/verify"
+  #   plugins:
+  #     - chronotc/monorepo-diff#v2.0.4:
+  #         diff: .buildkite/shared/scripts/diff.sh
+  #         log_level: "debug"
+  #         watch:
+  #           - path:
+  #               - ".buildkite/scripts/test_packer.sh"
+  #               - "packer/"
+  #               - ".buildkite/scripts/build_packer_ci.sh"
+  #               - ".buildkite/scripts/lib/packer.sh"
+  #               - ".buildkite/scripts/lib/packer_constants.sh"
+  #             config:
+  #               label: ":pipeline: Upload AMI Test"
+  #               command: "buildkite-agent pipeline upload .buildkite/pipeline.verify.ami-test.yml"
+
+
+  - label: ":yarn: Build UX Assets"
+    command: "make ux-tarball"
     plugins:
       - docker#v3.8.0:
-          image: "node"
-          entrypoint: "bash"
-
-  - label: ":large_blue_square::lint-roller: Lint Protobuf"
-    command:
-      - buf lint --verbose
-
-  - label: ":large_blue_square::face_with_symbols_on_mouth: Protobuf Breaking Changes"
-    command:
-      - "buf breaking --against=https://github.com/grapl-security/grapl.git --verbose"
-
-  - label: ":rust: rustfmt"
-    command:
-      - cd src/rust
-      - rustup set profile default
-      - bin/format --check
-
-  - label: ":rust: Linting"
-    command:
-      - cd src/rust
-      - bin/lint
-    agents:
-      queue: "beefy"
-
-  - label: ":rust: Unit Tests"
-    command:
-      - cd src/rust
-      - cargo test
-    agents:
-      queue: "beefy"
-
-  - label: ":rust: Unit Tests via Docker plugin"
-    command:
-      - cd src/rust
-      - cargo test
-    plugins:
-      - docker#v3.8.0:
-          image: "rust:1.51.0"
-    agents:
-      queue: "beefy"
-
-  - label: ":rust::docker: Unit Tests"
-    command:
-      - make test-unit-rust
-    agents:
-      queue: "beefy"
-
-  - label: ":python::jeans: Linting"
-    command:
-      - make lint-python
-    retry:
-      automatic:
-        limit: 3
-
-  - label: ":bash::jeans: Linting"
-    command:
-      - make lint-shell
-
-  - label: ":python::jeans: Unit Tests"
-    command:
-      - make test-unit-python
-    retry:
-      automatic:
-        limit: 3
-
-  - label: ":python::jeans: Typechecking"
-    command:
-      - make test-typecheck-pants
-    retry:
-      automatic:
-        limit: 3
-
-  # TODO: Consider beefy queue
-  - label: ":python::docker: Typechecking (:no_entry_sign::jeans:)"
-    command:
-      - make test-typecheck-docker
-
-  # TODO: Consider beefy queue
-  - label: ":typescript::docker: Unit Tests"
-    command:
-      - make test-unit-js
-
-  - label: ":typescript::yaml::lint-roller: Lint using Prettier"
-    command:
-      - make lint-prettier
-
-  - label: ":yarn: Build UX"
-    command: make build-ux
-    plugins:
-      - docker#v3.8.0:
-          # This container actually contains `make`, too!
           image: "node:16.5.0"
-
-  - label: ":aws-lambda::package: Create Lambda Zips"
-    command:
-      - make lambdas
-    agents:
-      queue: "beefy"
-
-  - label: ":hammer: Integration Tests"
-    command:
-      - .buildkite/scripts/integration.sh
-    agents:
-      queue: "beefy"
     artifact_paths:
-      - "test_artifacts/**/*"
+      - dist/grapl-ux.tar.gz
 
-  - label: ":hammer: E2E Tests"
+  - wait
+
+  - label: ":cloudsmith: Upload UX Assets"
     command:
-      - .buildkite/scripts/e2e.sh
+      - ".buildkite/scripts/upload_ux_assets.sh"
+    plugins:
+      - seek-oss/aws-sm#v2.3.1:
+          env:
+            CLOUDSMITH_API_KEY: "cloudsmith-token"
     agents:
-      queue: "beefy"
-    artifact_paths:
-      - "test_artifacts/**/*"
-
-  - label: ":packer::lint-roller: Packer Linting"
-    command:
-      # Since we run it in a container, we can't use the `make` for it
-      - .buildkite/scripts/lint_packer.sh
-    # Silently hangs unless the following is specified.
-    plugins:
-      - docker#v3.8.0:
-          image: "hashicorp/packer:1.7.2"
-          entrypoint: bash
-
-  - label: ":thinking_face: AMI Test?"
-    # Don't want to run this again in the merge pipeline, since
-    # building the image does exactly the same thing. We don't want to
-    # waste time.
-    if: build.env("BUILDKITE_PIPELINE_NAME") == "grapl/verify"
-    plugins:
-      - chronotc/monorepo-diff#v2.0.4:
-          diff: .buildkite/shared/scripts/diff.sh
-          log_level: "debug"
-          watch:
-            - path:
-                - ".buildkite/scripts/test_packer.sh"
-                - "packer/"
-                - ".buildkite/scripts/build_packer_ci.sh"
-                - ".buildkite/scripts/lib/packer.sh"
-                - ".buildkite/scripts/lib/packer_constants.sh"
-              config:
-                label: ":pipeline: Upload AMI Test"
-                command: "buildkite-agent pipeline upload .buildkite/pipeline.verify.ami-test.yml"
+      queue: "artifact-uploaders"
