@@ -8,11 +8,21 @@ env:
 
 steps:
   - label: ":yarn: Build UX Assets"
-    command: ".buildkite/scripts/build_and_upload_ux.sh"
+    command: "make ux-tarball"
     plugins:
       - docker#v3.8.0:
           image: "node:16.5.0"
-          # Required for permission to upload the ux_artifacts.json
-          # file to our Buildkite artifact bucket for access by
-          # downstream steps.
-          propagate-aws-auth-tokens: true
+    artifact_paths:
+      - dist/grapl-ux.tar.gz
+
+  - wait
+
+  - label: ":cloudsmith: Upload UX Assets"
+    command:
+      - ".buildkite/scripts/upload_ux_assets.sh"
+    plugins:
+      - seek-oss/aws-sm#v2.3.1:
+          env:
+            CLOUDSMITH_API_KEY: "cloudsmith-token"
+    agents:
+      queue: "artifact-uploaders"

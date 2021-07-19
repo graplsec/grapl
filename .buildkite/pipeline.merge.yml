@@ -93,19 +93,19 @@ steps:
                 label: ":pipeline: Upload AMI Build"
                 command: "buildkite-agent pipeline upload .buildkite/pipeline.merge.ami-build.yml"
 
-  # - label: ":thinking_face: UX Build?"
-  #   plugins:
-  #     - chronotc/monorepo-diff#v2.0.4:
-  #         diff: .buildkite/shared/scripts/diff.sh
-  #         log_level: "debug"
-  #         watch:
-  #           - path:
-  #               - "src/js/engagement_view/"
-  #               - ".buildkite/scripts/build_and_upload_ux.sh"
-  #               - ".buildkite/pipeline.merge.ux-build.yml"
-  #             config:
-  #               label: ":pipeline: Upload UX Build"
-  #               command: "buildkite-agent pipeline upload .buildkite/pipeline.merge.ux-build.yml"
+  - label: ":thinking_face: UX Build?"
+    plugins:
+      - chronotc/monorepo-diff#v2.0.4:
+          diff: .buildkite/shared/scripts/diff.sh
+          log_level: "debug"
+          watch:
+            - path:
+                - "src/js/engagement_view/"
+                - ".buildkite/scripts/upload_ux_assets.sh"
+                - ".buildkite/pipeline.merge.ux-build.yml"
+              config:
+                label: ":pipeline: Upload UX Build"
+                command: "buildkite-agent pipeline upload .buildkite/pipeline.merge.ux-build.yml"
 
   - wait
 
